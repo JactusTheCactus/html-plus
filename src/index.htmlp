@@ -1,0 +1,9 @@
+body {
+	#empty {
+		p#id.class {
+			text {
+				"Text"
+			}
+		}
+	}
+}

@@ -5,7 +5,13 @@ flag() {
 		do [[ -e ".flags/$f" ]] || return 1
 	done
 }
-if flag local
-	then :
-	else :
-fi
+rm -rf logs dist &> /dev/null || :
+mkdir -p logs
+mkdir -p dist
+exec &> logs/main.log
+tsc
+while read -r f
+	do node dist/htmlp.js "$f" || :
+done < <(find src -name \*.htmlp)
+node test.js &> logs/test.log || :
+find . -empty ! -name \*.\*keep -delete
