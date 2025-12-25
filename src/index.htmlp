@@ -1,9 +1,8 @@
 body {
-	#empty {
-		p#id.class {
-			text {
-				"Text"
-			}
-		}
+	h1 {
+		text {"Header"}
+	}
+	p {
+		text {"Text"}
 	}
 }
