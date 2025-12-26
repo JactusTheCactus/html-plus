@@ -142,11 +142,12 @@ class NodeP {
 			.join("");
 		return `<${this.tag}${attrs}>${children}</${this.tag}>`;
 	}
+	write(file: string): void {
+		fs.writeFileSync(
+			file.replace(/src\/(.*?)\.htmlp/, "dist/$1.html"),
+			new NodeP().parse("file", file).generate()
+		);
+	}
 }
 const file = process.argv[2];
-if (file) {
-	fs.writeFileSync(
-		file.replace(/src\/(.*?)\.htmlp/, "dist/$1.html"),
-		new NodeP().parse("file", file).generate()
-	);
-}
+if (file) new NopeP().write(file);
