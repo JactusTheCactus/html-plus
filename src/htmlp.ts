@@ -5,14 +5,14 @@ class NodeP {
 	tag: string;
 	id: string;
 	classes: string;
-	children: NodeP[];
+	children: Array<NodeP>;
 	constructor(
 		nodeType?: "element" | "text" | null,
 		value?: string | null,
 		tag?: string | null,
 		id?: string | null,
 		classes?: string | null,
-		children?: NodeP[] | null
+		children?: Array<NodeP> | null
 	) {
 		this.type = nodeType as string;
 		this.value = value as string;
@@ -45,7 +45,7 @@ class NodeP {
 		function consume(): string {
 			return file[i++]!;
 		}
-		function skipWhitespace() {
+		function skipWhitespace(): void {
 			while (/\s/.test(peek() ?? "")) {
 				consume();
 			}
@@ -89,7 +89,7 @@ class NodeP {
 				}
 				return new NodeP("text", value);
 			}
-			const tag = parseIdentifier() || "div";
+			const tag: string = parseIdentifier() || "div";
 			skipWhitespace();
 			let id = null;
 			let classes = [];
