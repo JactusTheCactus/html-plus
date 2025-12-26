@@ -7,7 +7,7 @@ class NodeP {
 	classes: string;
 	children: NodeP[];
 	constructor(
-		nodeType?: string | null,
+		nodeType?: "element" | "text" | null,
 		value?: string | null,
 		tag?: string | null,
 		id?: string | null,
