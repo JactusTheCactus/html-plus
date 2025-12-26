@@ -7,19 +7,19 @@ class NodeP {
 	classes: string;
 	children: Array<NodeP>;
 	constructor(
-		nodeType?: "element" | "text" | null,
+		nodeType?: "element" | "text",
 		value?: string | null,
-		tag?: string | null,
-		id?: string | null,
+		tag?: string,
+		id?: string,
 		classes?: string | null,
-		children?: Array<NodeP> | null
+		children?: Array<NodeP>
 	) {
 		this.type = nodeType!;
-		this.value = value!;
-		this.tag = tag!;
-		this.id = id!;
-		this.classes = classes!;
-		this.children = children || [];
+		this.value = value ?? "";
+		this.tag = tag ?? "";
+		this.id = id ?? "";
+		this.classes = classes ?? "";
+		this.children = children ?? [];
 	}
 	parse(source: "string" | "file", input: string): NodeP {
 		let file: string;
@@ -94,16 +94,15 @@ class NodeP {
 		}
 		function parseNode(): NodeP {
 			skipWhitespace();
-			if (peek() === "}") {
+			if (/\}/.test(peek())) {
 				throw new SyntaxError(`Unexpected "}" at ${i}`);
 			}
-			if (peek() === '"') {
-				const value = parseString();
-				return new NodeP("text", value);
+			if (/"/.test(peek())) {
+				return new NodeP("text", parseString());
 			}
 			const tag: string = parseIdentifier() || "div";
 			skipWhitespace();
-			let id = null;
+			let id: string;
 			let classes = [];
 			while (/[#.]/.test(peek())) {
 				switch (consume()) {
@@ -116,13 +115,13 @@ class NodeP {
 				}
 			}
 			skipWhitespace();
-			if (peek() !== "{") {
+			if (!/\{/.test(peek())) {
 				throw new SyntaxError(`Expected "{" at ${i}`);
 			}
 			consume();
 			skipWhitespace();
 			const children = [];
-			while (peek() !== "}") {
+			while (!/\}/.test(peek())) {
 				children.push(parseNode());
 				skipWhitespace();
 			}
@@ -131,7 +130,7 @@ class NodeP {
 				"element",
 				null,
 				tag,
-				id,
+				id!,
 				classes.length ? classes.join(" ") : null,
 				children
 			);
@@ -139,7 +138,7 @@ class NodeP {
 		return parseNode();
 	}
 	generate(): string {
-		if (this.type === "text") {
+		if (/text/.test(this.type)) {
 			return this.value;
 		}
 		const tag =

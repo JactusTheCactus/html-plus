@@ -8,11 +8,11 @@ class NodeP {
     children;
     constructor(nodeType, value, tag, id, classes, children) {
         this.type = nodeType;
-        this.value = value;
-        this.tag = tag;
-        this.id = id;
-        this.classes = classes;
-        this.children = children || [];
+        this.value = value ?? "";
+        this.tag = tag ?? "";
+        this.id = id ?? "";
+        this.classes = classes ?? "";
+        this.children = children ?? [];
     }
     parse(source, input) {
         let file;
@@ -84,16 +84,15 @@ class NodeP {
         }
         function parseNode() {
             skipWhitespace();
-            if (peek() === "}") {
+            if (/\}/.test(peek())) {
                 throw new SyntaxError(`Unexpected "}" at ${i}`);
             }
-            if (peek() === '"') {
-                const value = parseString();
-                return new NodeP("text", value);
+            if (/"/.test(peek())) {
+                return new NodeP("text", parseString());
             }
             const tag = parseIdentifier() || "div";
             skipWhitespace();
-            let id = null;
+            let id;
             let classes = [];
             while (/[#.]/.test(peek())) {
                 switch (consume()) {
@@ -106,13 +105,13 @@ class NodeP {
                 }
             }
             skipWhitespace();
-            if (peek() !== "{") {
+            if (!/\{/.test(peek())) {
                 throw new SyntaxError(`Expected "{" at ${i}`);
             }
             consume();
             skipWhitespace();
             const children = [];
-            while (peek() !== "}") {
+            while (!/\}/.test(peek())) {
                 children.push(parseNode());
                 skipWhitespace();
             }
@@ -122,7 +121,7 @@ class NodeP {
         return parseNode();
     }
     generate() {
-        if (this.type === "text") {
+        if (/text/.test(this.type)) {
             return this.value;
         }
         const tag = this.tag +

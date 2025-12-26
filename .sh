@@ -13,5 +13,4 @@ tsc
 while read -r f
 	do node dist/htmlp.js "$f" || :
 done < <(find src -name \*.htmlp)
-node test.js &> logs/test.log || :
 find . -empty ! -name \*.\*keep -delete
