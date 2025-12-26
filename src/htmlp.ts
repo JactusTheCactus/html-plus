@@ -93,7 +93,7 @@ class NodeP {
 			skipWhitespace();
 			let id = null;
 			let classes = [];
-			while (peek() === "#" || peek() === ".") {
+			while (/[#.]/.test(peek())) {
 				switch (consume()) {
 					case "#":
 						id = parseIdentifier();
