@@ -26,7 +26,7 @@ class NodeP {
 		switch (source) {
 			case "string": file = input; break
 			case "file": file = fs.readFileSync(input, "utf8"); break
-			default: console.error('Incorrect input source. Must be "string" or "file".')
+			default: console.error("Incorrect input source.", 'Must be "string" or "file".')
 		}
 		let i = 0;
 		function peek(): string {
