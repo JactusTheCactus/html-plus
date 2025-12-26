@@ -1,8 +1,66 @@
-body {
-	h1 {
-		text {"Header"}
-	}
-	p {
-		text {"Text"}
+html{
+	body {
+		h1 {"Rules"}
+		#1 {
+			h2 {"Rule 1 (1 / 2 entries)"}
+			pre {
+				"{a} = a"
+				br {}
+				"{a, b} = a"
+				sup {"b"}
+			}
+		}
+		#2 {
+			h2 {"Rule 2 (last entry is 1)"}
+			pre {"{a, b, c, ..., z, 1} = {a, b, c, ..., z}"}
+		}
+		#3 {
+			h2 {"Rule 3 (second entry is 1)"}
+			pre {"{a, 1, c, d, ..., z} = a"}
+		}
+		#4 {
+			h2 {"Rule 4 (third entry is 1)"}
+			pre {"{a, b, 1, ..., 1, d, e, ..., z} = {a, a, a, ..., {a, b-1, 1, ..., 1, d, e, ..., z}, d-1, e, ..., z}"}
+			p {
+				"The "
+				code {"..."}
+				" between the "
+				code {"1"}
+				"s represents an unbroken string of "
+				code {"1"}
+				"s - there can be any number of "
+				code {"1"}
+				"s, from one "
+				code {"1"}
+				" (third entry alone) to a string of "
+				code {"1"}
+				"s up to the penultimate entry - it is the last "
+				code {"1"}
+				" of this unbroken string (not necessarily the last "
+				code {"1"}
+				" in the array) that is replaced by a copy of the entire array with its second entry reduced by "
+				code {"1"}
+				", and all entries prior to this become an unbroken string of "
+				code {"a"}
+				"s. This is the only way that a fourth or subsequent entry in the array can be reduced in number (albeit by "
+				code {"1"}
+				"); if there are "
+				code {"n"}
+				" "
+				code {"1"}
+				"s in the unbroken string from the third entry onwards then the ("
+				code {"n+3"}
+				")th entry (represented by "
+				code {"d"}
+				") is reduced by "
+				code {"1"}
+				"."
+			}
+		}
+		#5 {
+			h2 {"Rule 5 (rules 1-4 do not apply)"}
+			pre {"{a, b, c, d, ... , z} = {a, {a, b-1, c, d, ... , z}, c-1, d, ... , z}"}
+			p {"The second entry is replaced by a copy of the entire array with its second entry reduced by 1, in order to reduce the third entry by 1."}
+		}
 	}
 }

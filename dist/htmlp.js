@@ -24,16 +24,16 @@ class NodeP {
                 file = fs.readFileSync(input, "utf8");
                 break;
             default:
-                console.error([
-                    "Incorrect input source.",
-                    'Must be "string" or "file".',
-                ].join("\n"));
+                console.error("Incorrect input source.", 'Must be "string" or "file".');
         }
         let i = 0;
-        function peek() {
-            return file[i];
+        function peek(n = 0) {
+            return file[i + n];
         }
-        function consume() {
+        function consume(n = 0) {
+            for (let I = 0; I < n; I++) {
+                i++;
+            }
             return file[i++];
         }
         function skipWhitespace() {
@@ -49,10 +49,35 @@ class NodeP {
             return s;
         }
         function parseString() {
+            function esc(char) {
+                const obj = {
+                    "<": "lt",
+                    ">": "gt",
+                    "&": "amp",
+                    '"': "quot",
+                    "'": "#x27",
+                };
+                return Object.keys(obj).includes(char)
+                    ? `&${obj[char]};`
+                    : char;
+            }
             consume();
             let s = "";
-            while (peek() !== '"') {
-                s += consume();
+            while (!/["']/.test(peek())) {
+                switch (peek()) {
+                    case "<":
+                    case ">":
+                    case "&":
+                    case '"':
+                    case "'":
+                        s += esc(consume());
+                        break;
+                    case "\\":
+                        s += esc(consume(1));
+                        break;
+                    default:
+                        s += consume();
+                }
             }
             consume();
             return s;
@@ -62,25 +87,15 @@ class NodeP {
             if (peek() === "}") {
                 throw new SyntaxError(`Unexpected "}" at ${i}`);
             }
-            if (file.startsWith("text", i)) {
-                i += 4;
-                skipWhitespace();
-                if (consume() !== "{") {
-                    throw new SyntaxError(`Expected "{" after text at ${i - 1}`);
-                }
-                skipWhitespace();
+            if (peek() === '"') {
                 const value = parseString();
-                skipWhitespace();
-                if (consume() !== "}") {
-                    throw new SyntaxError(`Expected "}" after text at ${i - 1}`);
-                }
                 return new NodeP("text", value);
             }
             const tag = parseIdentifier() || "div";
             skipWhitespace();
             let id = null;
             let classes = [];
-            while (peek() === "#" || peek() === ".") {
+            while (/[#.]/.test(peek())) {
                 switch (consume()) {
                     case "#":
                         id = parseIdentifier();
@@ -108,22 +123,29 @@ class NodeP {
     }
     generate() {
         if (this.type === "text") {
-            return this.value || "";
+            return this.value;
         }
-        let attrs = "";
-        if (this.id) {
-            attrs += ` id="${this.id}"`;
-        }
-        if (this.classes) {
-            attrs += ` class="${this.classes}"`;
-        }
+        const tag = this.tag +
+            (this.id ? ` id="${this.id}"` : "") +
+            (this.classes ? ` class="${this.classes}"` : "");
         const children = this.children
             .map((child) => child.generate())
             .join("");
-        return `<${this.tag}${attrs}>${children}</${this.tag}>`;
+        switch (this.tag) {
+            case "html":
+                return `<!DOCTYPE html><${tag}>${children}</${this.tag}>`;
+            case "hr":
+            case "br":
+                return `<${tag}/>`;
+            default:
+                return `<${tag}>${children}</${this.tag}>`;
+        }
+    }
+    write(file) {
+        fs.writeFileSync(file.replace(/src\/(.*?)\.htmlp/, "dist/$1.html"), new NodeP().parse("file", file).generate());
     }
 }
 const file = process.argv[2];
 if (file) {
-    fs.writeFileSync(file.replace(/src\/(.*?)\.htmlp/, "dist/$1.html"), new NodeP().parse("file", file).generate());
+    new NodeP().write(file);
 }

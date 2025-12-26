@@ -10,17 +10,18 @@
 		"declaration": false,
 		"noUncheckedIndexedAccess": true,
 		"exactOptionalPropertyTypes": true,
-		// "noImplicitReturns": true,
-		// "noImplicitOverride": true,
-		// "noUnusedLocals": true,
-		// "noUnusedParameters": true,
-		// "noFallthroughCasesInSwitch": true,
-		// "noPropertyAccessFromIndexSignature": true,
+		"noImplicitReturns": true,
+		"noImplicitOverride": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"noPropertyAccessFromIndexSignature": true,
 		"strict": true,
 		"verbatimModuleSyntax": true,
 		"isolatedModules": true,
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"noImplicitAny": true
 	}
 }
