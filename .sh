@@ -12,7 +12,7 @@ if flag local
 fi
 }
 rm -rf logs dist &> /dev/null || :
-then mkdir -p logs dist
+mkdir -p logs dist
 if flag local
 	then exec &> logs/main.log
 	else npm ci
