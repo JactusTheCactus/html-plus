@@ -6,8 +6,7 @@ flag() {
 	done
 }
 rm -rf logs dist &> /dev/null || :
-mkdir -p logs
-mkdir -p dist
+mkdir -p logs dist
 exec &> logs/main.log
 tsc
 while read -r f
