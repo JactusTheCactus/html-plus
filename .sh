@@ -6,8 +6,10 @@ flag() {
 	done
 }
 rm -rf logs dist &> /dev/null || :
-mkdir -p logs dist
-exec &> logs/main.log
+then mkdir -p logs dist
+if flag local
+	then exec &> logs/main.log
+fi
 tsc
 while read -r f
 	do node dist/htmlp.js "$f" || :
